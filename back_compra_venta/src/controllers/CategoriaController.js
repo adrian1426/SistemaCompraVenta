@@ -9,7 +9,7 @@ const errorReq = (res, error, next) => {
 
 const add = async (req, res, next) => {
   try {
-    const registro = await models.Categoria.create(req.body);
+    const registro = await models.categoria.create(req.body);
     res.status(200).json(registro);
   } catch (error) {
     errorReq(res, error, next);
@@ -18,7 +18,7 @@ const add = async (req, res, next) => {
 
 const query = async (req, res, next) => {
   try {
-    const consultaRegistro = await models.Categoria.findOne({ _id: req.query._id });
+    const consultaRegistro = await models.categoria.findOne({ _id: req.query._id });
     if (!consultaRegistro) {
       res.status(404).send({
         message: 'No existe el registro'
@@ -33,7 +33,7 @@ const query = async (req, res, next) => {
 
 const list = async (req, res, next) => {
   try {
-    const lista = await models.Categoria.find({});
+    const lista = await models.categoria.find({});
     res.status(200).json(lista);
   } catch (error) {
     errorReq(res, error, next);
@@ -42,7 +42,7 @@ const list = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const registro = await models.Categoria.findByIdAndUpdate(
+    const registro = await models.categoria.findByIdAndUpdate(
       { _id: req.body._id },
       {
         nombre: req.body.nombre,
@@ -57,7 +57,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const registro = await models.Categoria.findByIdAndDelete({ _id: req.body._id });
+    const registro = await models.categoria.findByIdAndDelete({ _id: req.body._id });
     res.status(200).json(registro);
   } catch (error) {
     errorReq(res, error, next);
@@ -66,7 +66,7 @@ const remove = async (req, res, next) => {
 
 const activate = async (req, res, next) => {
   try {
-    const activar = await models.Categoria.findByIdAndUpdate(
+    const activar = await models.categoria.findByIdAndUpdate(
       { _id: req.body._id },
       { estado: 1 }
     );
@@ -78,7 +78,7 @@ const activate = async (req, res, next) => {
 
 const deactivate = async (req, res, next) => {
   try {
-    const desactivar = await models.Categoria.findByIdAndUpdate(
+    const desactivar = await models.categoria.findByIdAndUpdate(
       { _id: req.body._id },
       { estado: 0 }
     );

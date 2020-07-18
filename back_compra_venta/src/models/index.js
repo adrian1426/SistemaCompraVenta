@@ -1,5 +1,5 @@
-import Categoria from './categoria';
+import categoria from './categoria';
 
 export default {
-  Categoria
+  categoria
 };
