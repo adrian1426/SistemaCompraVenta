@@ -9,7 +9,7 @@ const errorReq = (res, error, next) => {
 
 const add = async (req, res, next) => {
   try {
-    const registro = await models.Categoria.create(req.body);
+    const registro = await models.Articulo.create(req.body);
 
     res.status(200).json(registro);
   } catch (error) {
@@ -19,7 +19,8 @@ const add = async (req, res, next) => {
 
 const query = async (req, res, next) => {
   try {
-    const consultaRegistro = await models.Categoria.findOne({ _id: req.query._id });
+    const consultaRegistro = await models.Articulo.findOne({ _id: req.query._id })
+      .populate('categoria', { nombre: 1 });
 
     if (!consultaRegistro) {
       res.status(404).send({
@@ -37,7 +38,7 @@ const list = async (req, res, next) => {
   try {
     const valor = req.query.valor;
 
-    const lista = await models.Categoria.find(
+    const lista = await models.Articulo.find(
       {
         $or: [
           { nombre: new RegExp(valor, 'i') },
@@ -45,6 +46,7 @@ const list = async (req, res, next) => {
         ]
       },
       { createdAt: 0 })
+      .populate('categoria', { nombre: 1 })
       .sort({ createdAt: -1 });
 
     res.status(200).json(lista);
@@ -55,11 +57,15 @@ const list = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const registro = await models.Categoria.findByIdAndUpdate(
+    const registro = await models.Articulo.findByIdAndUpdate(
       { _id: req.body._id },
       {
+        categoria: req.body.categoria,
+        codigo: req.body.codigo,
         nombre: req.body.nombre,
-        descripcion: req.body.descripcion
+        descripcion: req.body.descripcion,
+        precio_venta: req.body.precio_venta,
+        stock: req.body.stock
       }
     );
 
@@ -71,7 +77,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const registro = await models.Categoria.findByIdAndDelete({ _id: req.body._id });
+    const registro = await models.Articulo.findByIdAndDelete({ _id: req.body._id });
 
     res.status(200).json(registro);
   } catch (error) {
@@ -81,7 +87,7 @@ const remove = async (req, res, next) => {
 
 const activate = async (req, res, next) => {
   try {
-    const activar = await models.Categoria.findByIdAndUpdate(
+    const activar = await models.Articulo.findByIdAndUpdate(
       { _id: req.body._id },
       { estado: 1 }
     );
@@ -94,7 +100,7 @@ const activate = async (req, res, next) => {
 
 const deactivate = async (req, res, next) => {
   try {
-    const desactivar = await models.Categoria.findByIdAndUpdate(
+    const desactivar = await models.Articulo.findByIdAndUpdate(
       { _id: req.body._id },
       { estado: 0 }
     );

@@ -1,5 +1,7 @@
-import categoria from './categoria';
+import Categoria from './categoria';
+import Articulo from './articulo';
 
 export default {
-  categoria
+  Categoria,
+  Articulo
 };
