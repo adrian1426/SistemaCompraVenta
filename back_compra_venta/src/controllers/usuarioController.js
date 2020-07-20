@@ -1,5 +1,6 @@
 import models from '../models';
 import bcrypt from 'bcryptjs';
+import tokenService from '../services/token';
 
 const errorReq = (res, error, next) => {
   res.status(500).send({
@@ -133,7 +134,7 @@ const validarPassword = async (passwordInput, passwordUsuario, res) => {
 };
 
 const verificarUsuario = async (email, passwordInput, res) => {
-  const usuario = await models.Usuario.findOne({ email });
+  const usuario = await models.Usuario.findOne({ email, estado: 1 });
 
   if (usuario) {
     return await validarPassword(passwordInput, usuario.password, res);
@@ -148,9 +149,9 @@ const verificarUsuario = async (email, passwordInput, res) => {
 const login = async (req, res, next) => {
   try {
     if (await verificarUsuario(req.body.email, req.body.password, res)) {
-      res.status(200).send({
-        message: 'Login exitoso'
-      });
+      const usuario = await models.Usuario.findOne({ email: req.body.email });
+      const token = await tokenService.generarToken(usuario._id);
+      res.status(200).json({ usuario, token });
     }
   } catch (error) {
     errorReq(res, error, next);
