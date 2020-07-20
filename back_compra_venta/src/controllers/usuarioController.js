@@ -120,4 +120,41 @@ const deactivate = async (req, res, next) => {
   }
 };
 
-export default { add, query, list, update, remove, activate, deactivate };
+const validarPassword = async (passwordInput, passwordUsuario, res) => {
+  const matchPassword = await bcrypt.compare(passwordInput, passwordUsuario);
+  if (matchPassword) {
+    return true;
+  } else {
+    res.status(404).send({
+      message: 'Password Incorrecto'
+    });
+    return false;
+  }
+};
+
+const verificarUsuario = async (email, passwordInput, res) => {
+  const usuario = await models.Usuario.findOne({ email });
+
+  if (usuario) {
+    return await validarPassword(passwordInput, usuario.password, res);
+  } else {
+    res.status(404).send({
+      message: 'No existe el usuario'
+    });
+    return false
+  }
+};
+
+const login = async (req, res, next) => {
+  try {
+    if (await verificarUsuario(req.body.email, req.body.password, res)) {
+      res.status(200).send({
+        message: 'Login exitoso'
+      });
+    }
+  } catch (error) {
+    errorReq(res, error, next);
+  }
+};
+
+export default { add, query, list, update, remove, activate, deactivate, login };
