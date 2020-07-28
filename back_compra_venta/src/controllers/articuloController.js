@@ -34,6 +34,23 @@ const query = async (req, res, next) => {
   }
 };
 
+const queryCodigo = async (req, res, next) => {
+  try {
+    const consultaRegistro = await models.Articulo.findOne({ codigo: req.query.codigo })
+      .populate('categoria', { nombre: 1 });
+
+    if (!consultaRegistro) {
+      res.status(404).send({
+        message: 'No existe el registro'
+      });
+    } else {
+      res.status(200).json(consultaRegistro);
+    }
+  } catch (error) {
+    errorReq(res, error, next);
+  }
+};
+
 const list = async (req, res, next) => {
   try {
     const valor = req.query.valor;
@@ -111,4 +128,4 @@ const deactivate = async (req, res, next) => {
   }
 };
 
-export default { add, query, list, update, remove, activate, deactivate };
+export default { add, query, queryCodigo, list, update, remove, activate, deactivate };
