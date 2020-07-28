@@ -21,11 +21,11 @@ const disminuirStock = async (idArticulo, cantidad) => {
 
 const add = async (req, res, next) => {
   try {
-    const registro = await models.Ingreso.create(req.body);
+    const registro = await models.Venta.create(req.body);
 
     const detalles = req.body.detalles;
     detalles.map((detalle) => {
-      aumentarStock(detalle._id, detalle.cantidad);
+      disminuirStock(detalle._id, detalle.cantidad);
     });
 
     res.status(200).json(registro);
@@ -36,7 +36,7 @@ const add = async (req, res, next) => {
 
 const query = async (req, res, next) => {
   try {
-    const consultaRegistro = await models.Ingreso.findOne({ _id: req.query._id })
+    const consultaRegistro = await models.Venta.findOne({ _id: req.query._id })
       .populate('usuario', { nombre: 1 })
       .populate('persona', { nombre: 1 });
 
@@ -56,7 +56,7 @@ const list = async (req, res, next) => {
   try {
     const valor = req.query.valor;
 
-    const lista = await models.Ingreso.find(
+    const lista = await models.Venta.find(
       {
         $or: [
           { num_comprobante: new RegExp(valor, 'i') },
@@ -75,14 +75,14 @@ const list = async (req, res, next) => {
 
 const activate = async (req, res, next) => {
   try {
-    const activar = await models.Ingreso.findByIdAndUpdate(
+    const activar = await models.Venta.findByIdAndUpdate(
       { _id: req.body._id },
       { estado: 1 }
     );
 
     const detalles = activar.detalles;
     detalles.map((detalle) => {
-      aumentarStock(detalle._id, detalle.cantidad);
+      disminuirStock(detalle._id, detalle.cantidad);
     });
 
     res.status(200).json(activar);
@@ -93,14 +93,14 @@ const activate = async (req, res, next) => {
 
 const deactivate = async (req, res, next) => {
   try {
-    const desactivar = await models.Ingreso.findByIdAndUpdate(
+    const desactivar = await models.Venta.findByIdAndUpdate(
       { _id: req.body._id },
       { estado: 0 }
     );
 
     const detalles = desactivar.detalles;
     detalles.map((detalle) => {
-      disminuirStock(detalle._id, detalle.cantidad);
+      aumentarStock(detalle._id, detalle.cantidad);
     });
 
     res.status(200).json(desactivar);
