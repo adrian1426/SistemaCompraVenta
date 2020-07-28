@@ -109,4 +109,33 @@ const deactivate = async (req, res, next) => {
   }
 };
 
-export default { add, query, list, activate, deactivate };
+const graficoEstadisticas = async (req, res, next) => {
+  try {
+    const consulta = await models.Venta.aggregate(
+      [
+        {
+          $group: {
+            _id: {
+              mes: { $month: "$createdAt" },
+              year: { $year: "$createdAt" }
+            },
+            total: { $sum: "$total" },
+            numeroVentas: { $sum: 1 }
+          }
+        },
+        {
+          $sort: {
+            "_id.year": -1,
+            "_id.mes": -1
+          }
+        }
+      ]
+    ).limit(12);
+
+    res.status(200).json(consulta);
+  } catch (error) {
+    errorReq(res, error, next);
+  }
+};
+
+export default { add, query, list, activate, deactivate, graficoEstadisticas };
