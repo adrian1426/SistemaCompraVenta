@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AuthService from './services/AuthService';
-import Login from './components/Login/Login';
+import Login from './components/login/Login';
 import UserNav from './components/user-nav/UserNav';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 

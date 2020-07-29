@@ -21,6 +21,7 @@ import { useStyles } from './UserNavStyles';
 import { Link, Switch, Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import HomeComponent from '../Home';
 import Styles from './UserNav.module.css';
+import Stock from '../stock/Stock';
 
 const UserNav = (props) => {
   const [open, setOpen] = useState(false);
@@ -134,7 +135,8 @@ const UserNav = (props) => {
         >
           <div className={classes.drawerHeader} />
           <Switch>
-            <Route path='/' exact render={routerProps => <HomeComponent {...routerProps} ejemploProp='prueba' />} />
+            <Route path='/' exact render={routerProps => <HomeComponent {...routerProps} />} />
+            <Route path='/stock' exact component={Stock} />
             <Redirect from='*' to='/' />
           </Switch>
         </main>
