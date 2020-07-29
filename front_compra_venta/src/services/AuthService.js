@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 export default class AuthService {
 
   constructor(domain) {
-    this.domain = domain;
+    this.domain = domain || process.env.REACT_APP_DOMAIN;
     this.login = this.login.bind(this);
     this.requestFetch = this.requestFetch.bind(this);
     this.getProfileDecode = this.getProfileDecode.bind(this);
@@ -50,10 +50,15 @@ export default class AuthService {
       body: JSON.stringify({ email, password })
     })
       .then(response => {
-        this.setToken(response.token);
-        this.setUser(response.usuario);
-        return Promise.resolve(response);
-      });
+        if (response.message !== 'Password Incorrecto' && response.message !== 'No existe el usuario') {
+          this.setToken(response.token);
+          this.setUser(response.usuario);
+          return Promise.resolve(response);
+        } else {
+          console.log(response.message);
+        }
+      })
+      .catch(error => console.log(error));
   };
 
   async requestFetch(urlRelative, options) {
