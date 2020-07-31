@@ -53,14 +53,14 @@ class NewDialog extends Component {
           </DialogTitle>
 
           <DialogContent>
-            {Object.keys(fields).map(key => {
+            {Object.keys(fields).map((key, ikey) => {
 
               if (!fields[key].type || fields[key].type === 'TextField') {
                 return (
                   <TextField
                     autoFocus margin='dense'
                     id={key}
-                    key={key}
+                    key={ikey}
                     label={key.toUpperCase()}
                     type='text'
                     onChange={(ev) => this.valueChanges(key, ev.target.value)}
@@ -86,7 +86,7 @@ class NewDialog extends Component {
 
                       {fields[key].options.map(item => {
                         return (
-                          <MenuItem value={item.id}>
+                          <MenuItem key={item.id} value={item.id}>
                             {item.value}
                           </MenuItem>
                         )

@@ -19,7 +19,7 @@ class TablePaginatioActions extends Component {
   };
 
   handleLastPageButtonClick = event => {
-    const pageLast = Math.max(0, Math.ceil(this.props.count / this.props.rowsPerPage));
+    const pageLast = Math.max(0, Math.ceil(this.props.count / this.props.rowsPerPage)) - 1;
     this.props.onChangePage(event, pageLast);
   };
 

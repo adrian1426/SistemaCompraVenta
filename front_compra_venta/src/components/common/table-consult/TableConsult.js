@@ -38,7 +38,7 @@ class TableConsult extends Component {
     });
   };
 
-  handleChangePage = (page) => {
+  handleChangePage = (event, page) => {
     this.setState({
       ...this.state,
       page
@@ -113,7 +113,7 @@ class TableConsult extends Component {
                     count={data.length}
                     rowsPerPage={rowsByPage}
                     labelRowsPerPage='Filas por página'
-                    page={page}
+                    page={parseInt(page)}
                     SelectProps={{
                       native: true
                     }}
