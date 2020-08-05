@@ -20,8 +20,12 @@ import AuthService from '../../services/AuthService';
 import { useStyles } from './UserNavStyles';
 import { Link, Switch, Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import HomeComponent from '../Home';
-import Styles from './UserNav.module.css';
 import Stock from '../stock/Stock';
+import Purchases from '../purchases/Purchases';
+import Sales from '../sales/Sales';
+import Users from '../users/Users';
+import Reports from '../reports/Reports';
+import Styles from './UserNav.module.css';
 
 const UserNav = (props) => {
   const [open, setOpen] = useState(false);
@@ -36,8 +40,8 @@ const UserNav = (props) => {
   const menuItems = [
     { icon: <Home />, link: '/' },
     { icon: <StoreMallDirectory />, link: '/stock' },
-    { icon: <Payment />, link: '/sales' },
     { icon: <ShoppingCart />, link: '/purchases' },
+    { icon: <Payment />, link: '/sales' },
     { icon: <Group />, link: '/users' },
     { icon: <ShowChart />, link: '/reports' }
   ];
@@ -137,6 +141,10 @@ const UserNav = (props) => {
           <Switch>
             <Route path='/' exact render={routerProps => <HomeComponent {...routerProps} />} />
             <Route path='/stock' exact component={Stock} />
+            <Route path='/purchases' exact><Purchases /></Route>
+            <Route path='/sales' exact component={Sales} />
+            <Route path='/users' exact component={Users} />
+            <Route path='/reports' exact component={Reports} />
             <Redirect from='*' to='/' />
           </Switch>
         </main>

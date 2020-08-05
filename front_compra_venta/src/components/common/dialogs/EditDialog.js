@@ -20,6 +20,20 @@ class EditDialog extends Component {
     });
   };
 
+  calcularParcial = (arrItems, impuesto = 0) => {
+    return this.truncar(this.sumarPrecio(arrItems) * (1 - impuesto), 2);
+  };
+
+  sumarPrecio = (arrItems) => {
+    return arrItems.reduce((p, c) => {
+      return p + ((c.cantidad * c.precio) - (c.descuento ? c.descuento : 0))
+    }, 0);
+  };
+
+  truncar = (valor, decimales) => {
+    return parseFloat((valor += '').substring(0, valor.lastIndexOf('.') + decimales + 1)) || 0;
+  };
+
   render() {
 
     const { form } = this.state;
@@ -88,7 +102,92 @@ class EditDialog extends Component {
                     </Select>
                   </FormControl>
                 )
-              } else {
+              } else if (fields[key].type === 'Read') {
+                if (fields[key].isList) {
+                  return (
+                    <div>
+                      <hr />
+
+                      <FormControl fullWidth>
+                        <table>
+                          {
+                            itemEdit[key].map((item, index) => {
+                              if (index > 0) {
+                                return null;
+                              } else {
+                                return (
+                                  <tr align='center'>
+                                    {Object.keys(item).map(property => {
+                                      if (property !== '_id') {
+                                        return <th>{property.toUpperCase()}</th>
+                                      } else {
+                                        return null;
+                                      }
+                                    })}
+
+                                    <th>Subtotal</th>
+                                  </tr>
+                                )
+                              }
+                            })
+                          }
+
+                          {itemEdit[key].map(item => {
+                            return (
+                              <tr align='center'>
+                                {Object.keys(item).map(property => {
+                                  if (property !== '_id') {
+                                    return (
+                                      <td>{item[property]}</td>
+                                    )
+                                  } else {
+                                    return null;
+                                  }
+                                })}
+
+                                <td>{
+                                  (item.precio * item.cantidad) - (item.descuento ? item.descuento : 0)
+                                } </td>
+                              </tr>
+                            )
+                          })}
+                        </table>
+
+                        <div style={{ textAlign: 'right' }}>
+
+                          <div>Total parcial: $
+                              <strong>
+                              {this.calcularParcial(itemEdit[key], (itemEdit['impuesto'] || 0))}
+                            </strong>
+                          </div>
+
+                          <div>Total impuesto: $
+                              <strong>
+                              {itemEdit['impuesto']}
+                            </strong>
+                          </div>
+
+                          <div>Total neto: $
+                              <strong>
+                              {itemEdit['total'] = this.sumarPrecio(itemEdit[key])}
+                            </strong>
+                          </div>
+                        </div>
+                      </FormControl>
+                    </div>
+                  )
+                } else {
+                  return (
+                    <FormControl fullWidth>
+                      <div>
+                        <strong style={{ margin: '3%' }}>{fields[key].as}</strong>
+                        <em>{itemEdit[key]}</em>
+                      </div>
+                    </FormControl>
+                  )
+                }
+              }
+              else {
                 return (
                   <div>no se encontró tipo definidos</div>
                 )
@@ -104,14 +203,14 @@ class EditDialog extends Component {
               onClick={
                 () => {
                   this.props.handleClose();
-                  edit(
-                    defaultOrChangedData(form, itemEdit, fields)
-                  );
+                  if (!this.props.detailView) {
+                    edit(defaultOrChangedData(form, itemEdit, fields));
+                  }
                 }
               }
               color='primary'
             >
-              Editar
+              {this.props.detailView ? 'Aceptar' : 'Editar'}
             </Button>
           </DialogActions>
         </Dialog>

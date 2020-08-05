@@ -8,7 +8,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableFooter from '@material-ui/core/TableFooter';
 import { Card, CardContent, IconButton } from '@material-ui/core';
-import { Edit as EditIcon } from '@material-ui/icons';
+import { Edit as EditIcon, Visibility as ReadIcon } from '@material-ui/icons';
 import ConfirmDialog from '../dialogs/ConfirmDialog';
 import EditDialog from '../dialogs/EditDialog';
 import TablePaginationActions from '../table-pagination-actions/TablePaginationActions';
@@ -90,14 +90,16 @@ class TableConsult extends Component {
                     <TableCell align='center'>
                       <div>
                         <IconButton onClick={() => this.handleEditRow(row)}>
-                          <EditIcon />
+                          {this.props.isDetailView ? <ReadIcon /> : <EditIcon />}
                         </IconButton>
 
-                        <ConfirmDialog
-                          confirmTitle={confirmTitle}
-                          confirmMessage={confirmMessage}
-                          onConfirm={() => handleRemove(row._id)}
-                        />
+                        {handleRemove !== null &&
+                          <ConfirmDialog
+                            confirmTitle={confirmTitle}
+                            confirmMessage={confirmMessage}
+                            onConfirm={() => handleRemove(row._id)}
+                          />
+                        }
                       </div>
                     </TableCell>
 
@@ -134,6 +136,7 @@ class TableConsult extends Component {
             item={itemEditSelected}
             edit={handleOnEdit}
             handleClose={this.handleCloseEdit}
+            detailView={this.props.isDetailView}
           />
         </div>
       );
